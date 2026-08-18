@@ -1,0 +1,6 @@
+{
+  "name": "ToolNest",
+  "description": "Fast, privacy-friendly online utilities and productivity tools for everyday tasks. 100% free, browser-based, and secure.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

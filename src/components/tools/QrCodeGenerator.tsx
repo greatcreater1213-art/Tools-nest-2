@@ -20,7 +20,7 @@ export const QrCodeGenerator: React.FC = () => {
   const [inputType, setInputType] = useState<InputType>('url');
   
   // Inputs
-  const [urlVal, setUrlVal] = useState<string>('https://toolnest.pages.dev');
+  const [urlVal, setUrlVal] = useState<string>('https://tools-nest-2.toolsnest.workers.dev');
   const [textVal, setTextVal] = useState<string>('');
   const [phoneVal, setPhoneVal] = useState<string>('+1234567890');
   const [waPhone, setWaPhone] = useState<string>('+1234567890');

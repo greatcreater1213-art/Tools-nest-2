@@ -1,7 +1,7 @@
 import React, { ReactNode, useState } from 'react';
 import { ToolItem } from '../../types';
 import { useNavigation } from '../../context/NavigationContext';
-import { TOOLS } from '../../config/siteConfig';
+import { TOOLS, SITE_CONFIG } from '../../config/siteConfig';
 import { SEO } from './SEO';
 import { Breadcrumbs } from './Breadcrumbs';
 import { AdSlot } from './AdSlot';
@@ -56,7 +56,7 @@ export const ToolLayout: React.FC<ToolLayoutProps> = ({ tool, children }) => {
       priceCurrency: 'USD',
     },
     description: tool.metaDescription,
-    url: window.location.href,
+    url: `${SITE_CONFIG.baseUrl}/#/tools/${tool.slug}`,
   };
 
   const relatedTools = TOOLS.filter(t => tool.relatedToolSlugs.includes(t.slug) || (t.category === tool.category && t.id !== tool.id)).slice(0, 3);
@@ -66,6 +66,8 @@ export const ToolLayout: React.FC<ToolLayoutProps> = ({ tool, children }) => {
       <SEO
         title={tool.metaTitle}
         description={tool.metaDescription}
+        canonical={`${SITE_CONFIG.baseUrl}/#/tools/${tool.slug}`}
+        keywords={tool.keywords}
         schema={schema}
       />
 

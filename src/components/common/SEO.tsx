@@ -5,15 +5,17 @@ interface SEOProps {
   title?: string;
   description?: string;
   canonical?: string;
+  canonicalUrl?: string;
+  keywords?: string[];
   schema?: Record<string, unknown>;
 }
 
-export const SEO: React.FC<SEOProps> = ({ title, description, canonical, schema }) => {
+export const SEO: React.FC<SEOProps> = ({ title, description, canonical, canonicalUrl: propCanonicalUrl, keywords, schema }) => {
   const fullTitle = title 
     ? (title.includes(SITE_CONFIG.name) ? title : `${title} | ${SITE_CONFIG.name}`)
     : `${SITE_CONFIG.name} - ${SITE_CONFIG.tagline}`;
   const metaDesc = description || SITE_CONFIG.description;
-  const canonicalUrl = canonical || (typeof window !== 'undefined' ? window.location.href : SITE_CONFIG.url);
+  const canonicalUrl = canonical || propCanonicalUrl || (typeof window !== 'undefined' ? window.location.href : SITE_CONFIG.url);
 
   useEffect(() => {
     // Update Document Title
@@ -27,6 +29,17 @@ export const SEO: React.FC<SEOProps> = ({ title, description, canonical, schema 
       document.head.appendChild(metaDescriptionTag);
     }
     metaDescriptionTag.setAttribute('content', metaDesc);
+
+    // Update Meta Keywords if provided
+    if (keywords && keywords.length > 0) {
+      let metaKeywordsTag = document.querySelector('meta[name="keywords"]');
+      if (!metaKeywordsTag) {
+        metaKeywordsTag = document.createElement('meta');
+        metaKeywordsTag.setAttribute('name', 'keywords');
+        document.head.appendChild(metaKeywordsTag);
+      }
+      metaKeywordsTag.setAttribute('content', keywords.join(', '));
+    }
 
     // Update Open Graph tags
     let ogTitleTag = document.querySelector('meta[property="og:title"]');
@@ -65,7 +78,7 @@ export const SEO: React.FC<SEOProps> = ({ title, description, canonical, schema 
     } else if (scriptTag) {
       scriptTag.remove();
     }
-  }, [fullTitle, metaDesc, canonicalUrl, schema]);
+  }, [fullTitle, metaDesc, canonicalUrl, keywords, schema]);
 
   return null;
 };

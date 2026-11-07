@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useId } from 'react';
 import { AdSlotType } from '../../types';
 
 interface AdSlotProps {
@@ -7,47 +7,100 @@ interface AdSlotProps {
   className?: string;
 }
 
+// 728x90 Desktop Ad Script Content
+const DESKTOP_728x90_HTML = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: transparent; overflow: hidden; display: flex; justify-content: center; align-items: center; width: 728px; height: 90px; }
+  </style>
+</head>
+<body>
+  <script type="text/javascript">
+    atOptions = {
+      'key' : '692924dc8738b345293e343ab32f91f2',
+      'format' : 'iframe',
+      'height' : 90,
+      'width' : 728,
+      'params' : {}
+    };
+  </script>
+  <script type="text/javascript" src="https://bauval.org/22/692924dc8738b345293e343ab32f91f2"></script>
+</body>
+</html>`;
+
+// 320x50 Mobile Ad Script Content
+const MOBILE_320x50_HTML = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: transparent; overflow: hidden; display: flex; justify-content: center; align-items: center; width: 320px; height: 50px; }
+  </style>
+</head>
+<body>
+  <script type="text/javascript">
+    atOptions = {
+      'key' : '6ec7dfe28f3b916bb4858b80c0756df0',
+      'format' : 'iframe',
+      'height' : 50,
+      'width' : 320,
+      'params' : {}
+    };
+  </script>
+  <script type="text/javascript" src="https://bauval.org/22/6ec7dfe28f3b916bb4858b80c0756df0"></script>
+</body>
+</html>`;
+
 export const AdSlot: React.FC<AdSlotProps> = ({ type, id, className = '' }) => {
-  // Dimensions configured to minimize Cumulative Layout Shift (CLS)
-  const getDimensions = () => {
-    switch (type) {
-      case 'TopAd':
-        return 'min-h-[90px] md:min-h-[100px] max-w-5xl';
-      case 'ToolTopAd':
-        return 'min-h-[100px] md:min-h-[120px] max-w-4xl';
-      case 'ToolBottomAd':
-        return 'min-h-[120px] md:min-h-[250px] max-w-4xl';
-      case 'ContentAd':
-        return 'min-h-[250px] max-w-xl';
-      default:
-        return 'min-h-[100px] max-w-4xl';
-    }
-  };
+  const reactId = useId();
+  const slotId = id || `ad-${type.toLowerCase()}-${reactId.replace(/[^a-zA-Z0-9]/g, '')}`;
 
   return (
     <div
-      id={id || `ad-container-${type.toLowerCase()}`}
-      className={`w-full mx-auto my-6 px-4 ${getDimensions()} ${className}`}
+      id={slotId}
+      className={`w-full mx-auto my-4 sm:my-6 flex flex-col items-center justify-center ${className}`}
       aria-label={`Advertisement Slot - ${type}`}
     >
-      <div className="w-full h-full bg-slate-100/80 dark:bg-slate-800/40 border border-dashed border-slate-300 dark:border-slate-700 rounded-xl flex flex-col items-center justify-center p-4 text-center transition-all">
-        {/* Transparent & Clean Ad Slot Label */}
-        <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-          <span>Advertisement Space • {type}</span>
+      {/* Desktop Banner: 728x90 (Hidden on mobile <768px, Visible on md+ 768px and up) */}
+      <div className="hidden md:flex flex-col items-center justify-center w-full overflow-hidden">
+        <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1 select-none">
+          Advertisement
+        </span>
+        <div className="w-[728px] h-[90px] max-w-full flex items-center justify-center bg-slate-50 rounded-lg overflow-hidden border border-slate-200/60 shadow-2xs">
+          <iframe
+            title={`Adsterra Desktop 728x90 - ${type}`}
+            srcDoc={DESKTOP_728x90_HTML}
+            width={728}
+            height={90}
+            className="w-[728px] h-[90px] border-0 overflow-hidden block"
+            scrolling="no"
+            loading="lazy"
+            sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms"
+          />
         </div>
-        <p className="text-xs text-slate-400 dark:text-slate-500">
-          Reserved for verified advertising partners (Adsterra / AdSense)
-        </p>
+      </div>
 
-        {/* 
-          =============================================================
-          INTEGRATION INSTRUCTION FOR ADSTERRA / AD CODE:
-          To place your live Adsterra banner or native widget here,
-          paste the script tag or container inside this element or
-          replace this entire inner block with your Adsterra snippet.
-          =============================================================
-        */}
+      {/* Mobile Banner: 320x50 (Visible on mobile <768px, Hidden on md+ 768px and up) */}
+      <div className="flex md:hidden flex-col items-center justify-center w-full overflow-hidden">
+        <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1 select-none">
+          Advertisement
+        </span>
+        <div className="w-[320px] h-[50px] max-w-full flex items-center justify-center bg-slate-50 rounded-lg overflow-hidden border border-slate-200/60 shadow-2xs">
+          <iframe
+            title={`Adsterra Mobile 320x50 - ${type}`}
+            srcDoc={MOBILE_320x50_HTML}
+            width={320}
+            height={50}
+            className="w-[320px] h-[50px] border-0 overflow-hidden block"
+            scrolling="no"
+            loading="lazy"
+            sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms"
+          />
+        </div>
       </div>
     </div>
   );
